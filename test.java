@@ -1,24 +1,17 @@
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class test {
     public static void main(String[] args) {
         
-        int[] newArr = createArray(12, -9, 9); 
-        printArray(newArr);
-    }
-    
-    public static int[] createArray(int size, int min, int max){
-        
-        int[] array = new int[size];
-        int arrayLen = array.length;
-        for (int i = 0; i < arrayLen; i++) {
-            array[i] = (int)(Math.random() * (max-(min-1)) + (min-1));
-        }
-        return array;
-    }
+    HashMap<Integer, String> passportsAndNames = new HashMap<>();
 
-    public static void printArray(int[] args){
-        String intAString = Arrays.toString(args);
-        System.out.println(intAString);
+    passportsAndNames.put(212133, "Лидия Аркадьевна Бубликова");
+    passportsAndNames.put(162348, "Иван Михайлович Серебряков");
+    passportsAndNames.put(8082771, "Дональд Джон Трамп");
+
+    String lidiaName = passportsAndNames.get(212133);
+    System.out.println(lidiaName);
+    System.out.println(Arrays.asList(passportsAndNames));
     }
 }

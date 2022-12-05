@@ -32,14 +32,15 @@
 // a: 1 b: 11111 c: 2 d: 1 -> 606408167570737286
 
 package HW3;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Scanner;
 
 public class HW3 {
     public static void main(String[] args) {
-        MyExecute.ex1();       
-
+        MyExecute.ex1();     
     }
 
     class MyExecute {
@@ -50,73 +51,147 @@ public class HW3 {
             int a = in.nextInt();
             System.out.print("Введите число b, к которому нужно преобразовать число а: ");
             int b = in.nextInt();
-            System.out.print("Введите число с, определяющего шаг умножения: ");
+            System.out.print("Введите число с, определяющее шаг умножения: ");
             int c = in.nextInt();
             System.out.print("Введите число d, определяющее шаг сложения: ");
             int d = in.nextInt();
             in.close();
-            MyLibrary.Steps(a, b, c, d);
-            }    
+            long[] myArr = MyLibrary.arrCreate(a, b, c, d);
+            int pathCount = 0;
+           
+            if (a < b){
+                Long paths = MyLibrary.steps(a, b, c, d, (long) pathCount, myArr);
+                
+                if (paths != 0){
+                    MyLibrary.commands(a, b, c, d, myArr);
+                } 
+                if (paths == 0){
+                    System.out.print("Нет решения");  
+                }                
+            }
+            else {
+                System.out.print("Нет решения");  
+            }   
+        }    
     }
 
     
     class MyLibrary {
 
-        public static void Steps (int a, int b, int c, int d) {
-           
-            int[] array = new int[b+1];
+          /** 
+        * @param steps - метод создания массива      
+        */
+        public static long [] arrCreate (int a, int b, int c, int d) {
+            long[] array = new long[b+1];
             int size = array.length;
-            for (int i = a; i < size; i++ ){
+            
+            for (int i = 0; i < size; i++ ){
                 array[i] = i;
-                // System.out.println(array[i]);
+                
             }
-            
-            HashMap<Integer, Integer> stepHashMap = new HashMap<>();
-            stepHashMap.put(a, 1);           
-            
+            // System.out.println(Arrays.toString(array));            
+            return array;           
+       
+        }
+
+        /** 
+        * @param steps - метод вывода общего количества преобразований числа 'a' в число 'b'       
+        */
+        public static Long steps (int a, int b, int c, int d, Long count, long[] array) {        
+            Long size = (long) array.length;            
+            HashMap<Long, Long> stepHashMap = new HashMap<>();
+            stepHashMap.put((long) a, (long) 1);        
             for (int i = a+1; i < size; i++ ){
-                if (array[i] % c == 0 && array[i]/c >= a){
-                    int division = array[i] / c;                    
-                    int valDiv = stepHashMap.get(division);
+                if (array[i] % c == 0 && array[i]/c >= a){  
+                    long division = (array[i] / c);                    
+                    Long valDiv = stepHashMap.get(division);
                     
-                    if (array[i-d] >= a){
-                        int substruct = array[i] - d;
-                        int valSubstr = stepHashMap.get(substruct);
-                        stepHashMap.put(array[i], valSubstr+valDiv);
+                    
+                    if (i-d >= a && i > 0){
+                        long substruct = (array[i] - d);
+                        long valSubstr = stepHashMap.get(substruct);
+                        stepHashMap.put(array[i], valSubstr+valDiv); 
+                       
                     }
                     else {                        
                         stepHashMap.put(array[i], valDiv);                        
                     }                   
                 } 
                 if (array[i] % c == 0 && array[i]/c < a){
-                    if (array[i-d] >= a){
-                        int substr = array[i] - d;
-                        int valSub = stepHashMap.get(substr);
+                    if (i-d >= a && i > 0){
+                        long substr = (array[i] - d);
+                        long valSub = stepHashMap.get(substr);
                         stepHashMap.put(array[i], valSub);  
                     }
                     else {
-                        stepHashMap.put(array[i], 0); 
-                    }
-                                     
+                        stepHashMap.put(array[i], (long) 0); 
+                    }                                     
                 }
 
-                if (array[i] % c != 0) {
-                    if (array[i-d] >= a){
-                        int temp = array[i-d];
-                        int valOdd = stepHashMap.get(temp);
+                if (array[i] % c != 0 ) {
+                    
+                    if (i-d >= a && i > 0){
+                        long temp = (array[i]-d);
+                        long valOdd = stepHashMap.get(temp);
                         stepHashMap.put(array[i], valOdd);
                     }
                     else {
-                        stepHashMap.put(array[i], 0);                       
+                        stepHashMap.put(array[i], (long) 0);                       
                     }                    
-                }
-                
+                }                
             }
             System.out.println(Arrays.asList(stepHashMap)); 
-          
-            // return array;
+            count = stepHashMap.get((long) b);
+            System.out.printf("Количество возможных преобразований %s: \n", count);    
+            return count;    
         }
-        
+
+
+        /** 
+        * @param commands - метод вывода маршрута c наименьшим количеством шагов для преобразования числа 'a' в число 'b'        
+        */
+        public static void commands (int a, int b, int c, int d, long[] myArr) { 
+            System.out.printf("-----------------------------------------\n");
+            System.out.printf("Вариант преобразования числа а в число b: \n");
+            String k1 = new String(" ,c*"); // умножение *c
+            String k2 = new String(" ,d+"); // прибавление +d  
+                        
+            Integer count = 0;
+            ArrayList<Integer> list1 = new ArrayList<Integer>();
+            String commandStr = "";
+            int i = myArr.length-1;  
+
+            
+            
+            while (i > a){                
+                if (myArr[i] %c == 0 && myArr[i] / c >= a){
+                   
+                    i = (int) (myArr[i] / c);
+                    list1.add((int) myArr[i]);
+                    commandStr += k1;                   
+                    count++;
+                }
+                else{
+                    i = (int) (myArr[i] - d);
+                    list1.add((int) myArr[i]);
+                    commandStr += k2;                    
+                    count++;
+                } 
+                
+                                           
+            }
+            
+            String reversedStr = new StringBuffer(commandStr).reverse().toString();                  
+            
+            ArrayList<Integer> listReversed = new ArrayList<>(list1);
+            
+            Collections.reverse(listReversed);
+            listReversed.add(b);
+            // System.out.println(list1);
+            System.out.printf("%s - этапы преобразования числа 'а' в число 'b' \n", listReversed);
+            System.out.printf("%s - набор команд, позволяющий число 'a' превратить в число 'b' \n", reversedStr); 
+            System.out.printf("Количество шагов в маршруте: %s \n", count);
+        }
     }
 
 }

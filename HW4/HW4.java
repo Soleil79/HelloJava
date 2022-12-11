@@ -59,10 +59,10 @@ public class HW4 {
             System.out.print("\n");
             // in.close();
 
-            int[][] array = new int[dim][dim];
+            int[][] intarray = new int[dim][dim];
            
-            MyLibrary.arrCreate(array, dim);
-            MyLibrary.printArr(array, dim);
+            MyLibrary.arrCreate(intarray, dim);
+            MyLibrary.printArr(intarray, dim);
 
             
             System.out.print("Введите координаты точки начала маршрута по оси х: ");
@@ -73,10 +73,14 @@ public class HW4 {
             int outX = in.nextInt();
             System.out.print("Введите координаты точки конца маршрута по оси y: ");
             int outY = in.nextInt();       
+            
+           
+            intarray = MyLibrary.startPoint(intarray, inX, inY); // Копия массива с точкой начала маршрута - 0
+            MyLibrary.printArr(intarray, dim);
             in.close();
-           
-           
-        
+
+            MyLibrary.wavesCreate(intarray, 0); 
+            MyLibrary.printArr(intarray, dim);
         }    
     }
 
@@ -142,9 +146,58 @@ public class HW4 {
                 }
                
             }
-        
+
+        public static int[][]startPoint (int [][] myarray, int x, int y) {
+            
+                                
+            if ( myarray[x][y] == -1){
+                myarray[x][y] = 0;
+            }
+            else{
+                System.out.println("\n!Введите коректные координаты точки начала маршрута!\n");
+                Scanner in = new Scanner(System.in);
+                System.out.print("Введите координаты точки начала маршрута по оси х: ");
+                int newX = in.nextInt();
+                System.out.print("Введите координаты точки начала маршрута по оси y: ");
+                int newY = in.nextInt();
+
+                startPoint(myarray, newX, newY);
+                in.close();
+            } 
+             
+            
+            return myarray;                
 
         }
+
+        public static int [][] wavesCreate (int [][] array, int count) { 
+
+                
+            for (int i = 1; i < array.length-1; i++) { 
+        
+                for (int j = 1; j < array[i].length-1; j++) {      
+                    
+                    
+                    if ((array[i][j] == -1) && (array[i][j-1] == count || array[i][j+1] == count || array[i-1][j] == count || array[i+1][j] == count)){
+                        array[i][j] = count+1;                               
+
+                    }                           
+                    
+                }
+                
+            }
+
+            for (int i = 1; i < array.length-1; i++) {         
+                for (int j = 1; j < array[i].length-1; j++) 
+                if (array[i][j] == -1){
+                    wavesCreate(array, count+1); 
+                }                              
+                 
+            }    
+            return array;
+        }
+          
+    }
 }
         
     

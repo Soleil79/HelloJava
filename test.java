@@ -1,226 +1,80 @@
-// На вход
-// некоторому исполнителю
-// подаётся четыре числа (a, b, c, d).
+// Инициализация
 
-// У исполнителя есть две команды
-// - команда 1 (к1): увеличить в с раз, а умножается на c
-// - команда 2 (к2): увеличить на d , к a прибавляется d
-// написать программу, которая выдаёт общее количество
-// возможных преобразований a в b
-// набор команд, позволяющий число a превратить в число b или сообщить, что это
-// невозможно
+// Пометить стартовую ячейку 
+// d := 0 
+// Распространение волны
 
-// Пример 1: а = 1, b = 7, c = 2, d = 1
-// ответ: к1, к1, к1, к1, к1, к1 или к1, к2, к1, к1, к1 или к1, к1, к2, к1.
-// Пример 2: а = 11, b = 7, c = 2, d = 1
-// ответ: нет решения.
-// *Подумать над тем, как сделать минимальное количество маршрутов / вывод маршрута (хотя бы одного)
+// ЦИКЛ
+//   ДЛЯ каждой ячейки loc, помеченной числом d
+//     пометить все соседние свободные непомеченные ячейки числом d + 1
+//   КЦ
+//   d := d + 1
+// ПОКА (финишная ячейка не помечена) И (есть возможность распространения волны) 
+// Восстановление пути
 
-// Тестовые данные
+// ЕСЛИ финишная ячейка помечена
+// ТО
+//   перейти в финишную ячейку
+//   ЦИКЛ
+//     выбрать среди соседних ячейку, помеченную числом на 1 меньше числа в текущей ячейке
+//     перейти в выбранную ячейку и добавить её к пути
+//   ПОКА текущая ячейка — не стартовая
+//   ВОЗВРАТ путь найден
+// ИНАЧЕ
+//   ВОЗВРАТ путь не найден
 
-// a: 2 b: 7 c: 2 d: 1 -> 3
-// a: 3 b: 27 c: 3 d: 2 -> 6
-// a: 30 b: 345 c: 5 d: 6 -> 0
-// a: 30 b: 345 c: 2 d: 1 -> 7047
-// a: 22 b: 333 c: 3 d: 1 -> 467
-// a: 55 b: 555 c: 5 d: 2 -> 30
-// a: 22 b: 2022 c: 11 d: 56 -> 0   !!!!!!!!!!!
-// a: 22 b: 2022 c: 11 d: 10 -> 18   !зеркалит цифры
-// a: 22 b: 2022 c: 3 d: 1 -> 763827
-// a: 22 b: 20220 c: 3 d: 1 -> 535173226980 
-// a: 1 b: 1111 c: 2 d: 1 -> 3990330794  
-// a: 1 b: 11111 c: 2 d: 1 -> 606408167570737286  
+// Реализовать волновой алгоритм и подготовиться к его решению.
+// 1. Описать логику получения карты
+// 2. Описать логику заполнения карты
+// 3. Описать как установить точку начала получения маршрута
+// 4. Будет ли отличаться решение, если на карте будет несколько выходов
+// Теория
+// +ГИТ. readme.md
 
 
+package HW4;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Scanner;
 
-public class test {
-    // public static void main(String[] args) {
-    //     MyExecute.ex1();     
-    // }
-
-    // class MyExecute {
-    //     public static void ex1() {
-    //         System.out.println("Программа для определения количества шагов для преобразования числа а в число b, путем либо умножения (в c раз), либо прибавления (на d единиц) ");
-    //         Scanner in = new Scanner(System.in);
-    //         System.out.print("Введите число а, которое необходимо преобразовать: ");
-    //         int a = in.nextInt();
-    //         System.out.print("Введите число b, к которому нужно преобразовать число а: ");
-    //         int b = in.nextInt();
-    //         System.out.print("Введите число с, определяющее шаг умножения: ");
-    //         int c = in.nextInt();
-    //         System.out.print("Введите число d, определяющее шаг сложения: ");
-    //         int d = in.nextInt();
-    //         in.close();
-    //         long[] myArr = MyLibrary.arrCreate(a, b, c, d);
-    //         int pathCount = 0;
-           
-    //         if (a < b){
-    //             Long paths = MyLibrary.steps(a, b, c, d, (long) pathCount, myArr);
-                
-    //             if (paths != 0){
-    //                 MyLibrary.commands(a, b, c, d, myArr);
-    //             } 
-    //             if (paths == 0){
-    //                 System.out.print("Нет решения");  
-    //             }                
-    //         }
-    //         else {
-    //             System.out.print("Нет решения");  
-    //         }   
-    //     }    
-    // }
-
-    
-    // class MyLibrary {
-
-    //       /** 
-    //     * @param steps - метод создания массива      
-    //     */
-    //     public static long [] arrCreate (int a, int b, int c, int d) {
-    //         long[] array = new long[b+1];
-    //         int size = array.length;
-            
-    //         for (int i = 0; i < size; i++ ){
-    //             array[i] = i;
-                
-    //         }
-    //         System.out.println(Arrays.toString(array));            
-    //         return array;
-    //     }
-
-    //     /** 
-    //     * @param steps - метод вывода общего количества преобразований числа 'a' в число 'b'       
-    //     */
-    //     public static Long steps (int a, int b, int c, int d, Long count, long[] array) {        
-    //         int size = array.length;            
-    //         HashMap<Long, Long> stepHashMap = new HashMap<>();
-    //         stepHashMap.put((long) a, (long) 1);        
-    //         for (int i = a+1; i < size; i++ ){
-    //             if (array[i] % c == 0 && array[i]/c >= a){  
-    //                 long division = (array[i] / c);                    
-    //                 Long valDiv = stepHashMap.get(division);
-                    
-    //                 if (array[i-d] >= a){
-    //                     long substruct = (array[i] - d);
-    //                     long valSubstr = stepHashMap.get(substruct);
-    //                     stepHashMap.put(array[i], valSubstr+valDiv); 
-    //                 }
-    //                 else {                        
-    //                     stepHashMap.put(array[i], valDiv);                        
-    //                 }                   
-    //             } 
-    //             if (array[i] % c == 0 && array[i]/c < a){
-    //                 if (array[i-d] >= a){
-    //                     long substr = (array[i] - d);
-    //                     long valSub = stepHashMap.get(substr);
-    //                     stepHashMap.put(array[i], valSub);  
-    //                 }
-    //                 else {
-    //                     stepHashMap.put(array[i], (long) 0); 
-    //                 }                                     
-    //             }
-
-    //             if (array[i] % c != 0 ) {
-    //                 if (array[i-d] >= a){
-    //                     long temp = (array[i] - d);
-    //                     long valOdd = stepHashMap.get(temp);
-    //                     stepHashMap.put(array[i], valOdd);
-    //                 }
-    //                 else {
-    //                     stepHashMap.put(array[i], (long) 0);                       
-    //                 }                    
-    //             }                
-    //         }
-    //         System.out.println(Arrays.asList(stepHashMap)); 
-    //         count = stepHashMap.get((long) b);
-    //         System.out.printf("Количество возможных преобразований %s: \n", count);    
-    //         return count;    
-    //     }
-
-    //     /** 
-    //     * @param commands - метод вывода маршрута c наименьшим количеством шагов для преобразования числа 'a' в число 'b'        
-    //     */
-    //     public static void commands (int a, int b, int c, int d, long[] myArr) { 
-    //         String k1 = new String(" ,c*"); // умножение *c
-    //         String k2 = new String(" ,d+"); // прибавление +d  
-          
-
-    //         Integer size = myArr.length-1;   
-    //         Integer count = 0;
-    //         ArrayList<Integer> list1 = new ArrayList<Integer>();
-    //         String commandStr = "";
-    //         int i = size;
-
-            
-    //         while (i > a){                
-    //             if (myArr[i] %c == 0 && myArr[i] / c >= a){
-                   
-    //                 i = (int) (myArr[i] / c);
-    //                 list1.add((int) myArr[i]);
-    //                 commandStr += k1;                   
-    //                 count++;
-    //             }
-    //             else{
-    //                 i = (int) (myArr[i] - d);
-    //                 list1.add((int) myArr[i]);
-    //                 commandStr += k2;                    
-    //                 count++;
-    //             } 
-                
-                              
-    //         }
-            
-    //         String reversedStr = new StringBuffer(commandStr).reverse().toString();                  
-    //         System.out.printf("Минимальное количество шагов в маршруте: %s \n", count);
-    //         ArrayList<Integer> listReversed = new ArrayList<>(list1);
-            
-    //         Collections.reverse(listReversed);
-    //         listReversed.add(b);
-    //         // System.out.println(list1);
-    //         System.out.printf("%s - этапы преобразования числа 'а' в число 'b' \n", listReversed);
-    //         System.out.printf("%s - набор команд, позволяющий число 'a' превратить в число 'b'", reversedStr); 
-    //     }
-    // }
-
+public class HW4 {
     public static void main(String[] args) {
         MyExecute.ex1();     
     }
 
     class MyExecute {
         public static void ex1() {
-            System.out.println("Программа для определения количества шагов для преобразования числа а в число b, путем либо умножения (в c раз), либо прибавления (на d единиц) ");
-            Scanner in = new Scanner(System.in);
-            System.out.print("Введите число а, которое необходимо преобразовать: ");
-            int a = in.nextInt();
-            System.out.print("Введите число b, к которому нужно преобразовать число а: ");
-            int b = in.nextInt();
-            System.out.print("Введите число с, определяющее шаг умножения: ");
-            int c = in.nextInt();
-            System.out.print("Введите число d, определяющее шаг сложения: ");
-            int d = in.nextInt();
-            in.close();
-            long[] myArr = MyLibrary.arrCreate(a, b, c, d);
-            int pathCount = 0;
+            System.out.println("Реализация волнового алгоритма \n");
+            Scanner in = new Scanner(System.in);   
+            System.out.print("Введите величину карты: ");
+            int dim = in.nextInt();
+            System.out.print("\n");
            
-            if (a < b){
-                Long paths = MyLibrary.steps(a, b, c, d, (long) pathCount, myArr);
-                
-                if (paths != 0){
-                    MyLibrary.commands(a, b, c, d, myArr);
-                } 
-                if (paths == 0){
-                    System.out.print("Нет решения");  
-                }                
-            }
-            else {
-                System.out.print("Нет решения");  
-            }   
+
+            int[][] array = new int[dim][dim];
+           
+            MyLibrary.arrCreate(array, dim);
+            MyLibrary.printArr(array, dim);
+
+            
+            System.out.print("Введите координаты точки начала маршрута по оси х: ");
+            int inX = in.nextInt();
+            System.out.print("Введите координаты точки начала маршрута по оси y: ");
+            int inY = in.nextInt();
+            System.out.print("Введите координаты точки конца маршрута по оси х: ");
+            int outX = in.nextInt();
+            System.out.print("Введите координаты точки конца маршрута по оси y: ");
+            int outY = in.nextInt();       
+            in.close();
+            
+           
+
+            int[][] newArr = MyLibrary.newArr(array, inX, inY); // Копия массива с точкой начала маршрута - 0
+            MyLibrary.printArr(newArr, dim);
+           
+           
+            MyLibrary.wavesCreate(newArr, 0); // Распространение волны
+            MyLibrary.printArr(newArr, dim);
         }    
     }
 
@@ -230,129 +84,118 @@ public class test {
           /** 
         * @param steps - метод создания массива      
         */
-        public static long [] arrCreate (int a, int b, int c, int d) {
-            long[] array = new long[b+1];
-            int size = array.length;
+        public static int [][] arrCreate (int [][] array, int size) {
             
-            for (int i = 0; i < size; i++ ){
-                array[i] = i;
                 
+         
+        //         // array[0][0] = 1; первая скобка - строка, вторая столбец
+        //         // array[0][1] = 2;
+        //         // array[1][0] = 3;
+        //         // array[1][1] = 4;
+            // Создаем массив где свободные ячейки -1;
+            for (int [] row : array){
+                Arrays.fill(row, -1); 
             }
-            // System.out.println(Arrays.toString(array));            
-            return array;
-            
-   
-        }
 
-        /** 
-        * @param steps - метод вывода общего количества преобразований числа 'a' в число 'b'       
-        */
-        public static Long steps (int a, int b, int c, int d, Long count, long[] array) {        
-            Long size = (long) array.length;            
-            HashMap<Long, Long> stepHashMap = new HashMap<>();
-            stepHashMap.put((long) a, (long) 1);        
-            for (int i = a+1; i < size; i++ ){
-                if (array[i] % c == 0 && array[i]/c >= a){  
-                    long division = (array[i] / c);                    
-                    Long valDiv = stepHashMap.get(division);
-                    
-                    
-                    if (i-d >= a && i > 0){
-                        long substruct = (array[i] - d);
-                        long valSubstr = stepHashMap.get(substruct);
-                        stepHashMap.put(array[i], valSubstr+valDiv); 
-                       
-                    }
-                    else {                        
-                        stepHashMap.put(array[i], valDiv);                        
-                    }                   
-                } 
-                if (array[i] % c == 0 && array[i]/c < a){
-                    if (i-d >= a && i > 0){
-                        long substr = (array[i] - d);
-                        long valSub = stepHashMap.get(substr);
-                        stepHashMap.put(array[i], valSub);  
-                    }
-                    else {
-                        stepHashMap.put(array[i], (long) 0); 
-                    }                                     
+            // Заполняем карту препятствиями (99):
+           for (int i = 0; i < array.length; i++) {
+                for (int j = 0; j < array[i].length; j++) {
+                int obstacle = (int) ((Math.random() * ((size)-1)) + 1);                
+                if (j == obstacle || i+1 == obstacle){
+                    array[i][j] = 99;
                 }
-
-                if (array[i] % c != 0 ) {
-                    
-                    if (i-d >= a && i > 0){
-                        long temp = (array[i]-d);
-                        long valOdd = stepHashMap.get(temp);
-                        stepHashMap.put(array[i], valOdd);
-                    }
-                    else {
-                        stepHashMap.put(array[i], (long) 0);                       
-                    }                    
-                }                
-            }
-            System.out.println(Arrays.asList(stepHashMap)); 
-            count = stepHashMap.get((long) b);
-            System.out.printf("\n Количество возможных преобразований %s: \n", count);    
-            return count;    
+                if ((i == 0 || j == 0) || (i == size-1 || j == size-1)){
+                    array[i][j] = 99;
+                }                             
+              
+            }          
         }
+        return array;
+    }               
 
-
-        /** 
-        * @param commands - метод вывода маршрута c наименьшим количеством шагов для преобразования числа 'a' в число 'b'        
-        */
-        public static void commands (int a, int b, int c, int d, long[] myArr) { 
-            String k1 = new String(" ,c*"); // умножение *c
-            String k2 = new String(" ,d+"); // прибавление +d  
-                        
-            Integer count = 0;
-            ArrayList<Long> list1 = new ArrayList<Long>();
-            String commandStr = "";
-            int i = myArr.length-1;  
-
+        
+        public static void printArr  (int [][] array, int size) {
             
-            while (i > a){            
-                // System.out.println(i);
-
-                if (i %c == 0 && i / c >= a){
-                    
-                    
-
-                    if ((i%c == 0) || (i / c > a && i/c % d == 0) || (i / c > a && (i / c) - d >= a)){                      
-                        i = i/c;
-                        list1.add((long) i);
-                        commandStr += k1;                   
-                        count++;
-                    }
+                String [] xString = new String[size];
+                xString[0] = " ";
+                System.out.printf("%s\t", xString[0]);
+                xString[1] = "0";
+                System.out.printf("%s\t", xString[1]);
+                for (int el = 1; el < size; el++) {
+                    xString[el] = Integer.toString(el);
+                    System.out.printf("%s\t", xString[el]);
+                }
+                
+                System.out.print("\n\n");
+                int count = 0;
+                for (int i = 0; i < array.length; i++) {
+                    System.out.print(count + "\t");
                                     
-                    else {
-                        i = i - d;
-                        list1.add((long) i);
-                        commandStr += k2;                    
-                        count++;
+                    for (int j = 0; j < array.length; j++) {                        
+                        System.out.print(array[i][j] + "\t");
                     }
-                }
-
-                
-                if (i %c != 0 && i - d >= a ){
-                    i = i - d;
-                    list1.add((long) i);
-                    commandStr += k2;                    
+                    
                     count++;
-                }    
+                    System.out.println("\n\n");
+                }
+               
+            }
 
-                         
+
+        public static int[][]newArr (int [][] array, int x, int y) {
+            
+            int[][] copyarr = new int[array.length][]; // копируем данные в новый массив
+            for (int i = 0; i < array.length; i++) {
+                array[i] = array[i].clone();
             }
             
-            String reversedStr = new StringBuffer(commandStr).reverse().toString();                  
-            System.out.printf("Минимальное количество шагов в маршруте: %s \n", count);
-            ArrayList<Long> listReversed = new ArrayList<>(list1);
+            // определим первую волну
+                                    
+            // if ((array[x][y-1]) == -1){
+            //     array[x][y-1] = 1;
+            // }
+            // if ((array[x][y+1])  == -1){
+            //     array[x][y+1] = 1;
+            // }
+            // if ((array[x-1][y])  == -1){
+            //     array[x-1][y] = 1;
+            // }
+            // if ((array[x+1][y])  == -1){
+            //     array[x+1][y] = 1;
+            // }              
             
-            Collections.reverse(listReversed);
-            listReversed.add((long) b);
-            System.out.println(list1);
-            System.out.printf("%s - этапы преобразования числа 'а' в число 'b' \n", listReversed);
-            System.out.printf("%s - набор команд, позволяющий число 'a' превратить в число 'b'", reversedStr); 
+            array[x][y] = 0;
+            // array[outx][outy] = 100;
+            
+            return copyarr;
         }
+
+        // Распространение волны:
+                public static int [][] wavesCreate (int [][] array, int count) { 
+
+                
+                    for (int i = 1; i < array.length-1; i++) { 
+                
+                        for (int j = 1; j < array[i].length-1; j++) {      
+                            
+                            
+                            if ((array[i][j] == -1) && (array[i][j-1] == count || array[i][j+1] == count || array[i-1][j] == count || array[i+1][j] == count)){
+                                array[i][j] = count+1;                               
+        
+                            }                           
+                            
+                        }
+                        
+                    }
+                    
+                    // wavesCreate(copyarr, count+1);                    
+                    return array;          
+               
+        }        
+      
+
+
     }
 }
+        
 

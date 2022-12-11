@@ -189,14 +189,13 @@ public class HW4 {
 
             for (int i = 1; i < array.length-1; i++) {         
                 for (int j = 1; j < array[i].length-1; j++) 
-                if (array[i][j] == -1){
+                if (array[i][j] == (-1)){
                     wavesCreate(array, count+1); 
                 }                              
                  
             }    
             return array;
-        }
-          
+        }  
     }
 }
         

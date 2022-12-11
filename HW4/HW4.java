@@ -34,6 +34,7 @@
 
 package HW4;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -45,15 +46,8 @@ public class HW4 {
     class MyExecute {
         public static void ex1() {
             System.out.println("Реализация волнового алгоритма \n");
-            Scanner in = new Scanner(System.in);
-            // System.out.print("Введите координаты точки начала маршрута по оси х: ");
-            // int inX = in.nextInt();
-            // System.out.print("Введите координаты точки начала маршрута по оси y: ");
-            // int inY = in.nextInt();
-            // System.out.print("Введите координаты точки конца маршрута по оси х: ");
-            // int outX = in.nextInt();
-            // System.out.print("Введите координаты точки конца маршрута по оси y: ");
-            // int outY = in.nextInt();
+            System.out.println("Условные обозначеия: 99 - препятствие, -1 - свободные ячейки, 0 - точка начала маршрута \n");
+            Scanner in = new Scanner(System.in);            
             System.out.print("Введите величину карты: ");
             int dim = in.nextInt();
             System.out.print("\n");
@@ -80,7 +74,14 @@ public class HW4 {
             in.close();
 
             MyLibrary.wavesCreate(intarray, 0); 
+
+            System.out.println("Визуализация распространения волн по массиву. 100 - путь в эту точку не найден \n");
             MyLibrary.printArr(intarray, dim);
+            
+            // Поиск маршрута (строим маршрут от конечной точки до начальной) Пока закомментировано до устранения ошибок
+            // MyLibrary.findPath(intarray, outX, outY); 
+            // MyLibrary.printArr(intarray, dim);
+
         }    
     }
 
@@ -91,13 +92,7 @@ public class HW4 {
         * @param steps - метод создания массива      
         */
         public static int [][] arrCreate (int [][] array, int size) {
-            
-                
-         
-        //         // array[0][0] = 1; первая скобка - строка, вторая столбец
-        //         // array[0][1] = 2;
-        //         // array[1][0] = 3;
-        //         // array[1][1] = 4;
+        
 
             for (int [] row : array){
                 Arrays.fill(row, -1); 
@@ -196,8 +191,71 @@ public class HW4 {
             }    
             return array;
         }  
-    }
-}
-        
     
 
+        public static int [][] findPath (int [][] myarray, int x, int y) { 
+            // Проверка конечной точки маршрута
+            if ( myarray[x][y] <= 0 && myarray[x][y] >= 99 ){
+             
+                System.out.println("\n!Введите коректные координаты конечной точки маршрута!\n");
+                Scanner in = new Scanner(System.in);
+                System.out.print("Введите координаты конечной точки маршрута по оси х: ");
+                int newX = in.nextInt();
+                System.out.print("Введите координаты конечной точки маршрута по оси y: ");
+                int newY = in.nextInt();
+
+                findPath(myarray, newX, newY);
+                in.close();
+            }              
+           
+            // Поиск маршрута от конечной точки
+            while (myarray[x][y] != 0){
+                int temp = myarray[x][y];
+
+                for (int i = x; i < myarray.length-1;) { 
+            
+                    for (int j = y; j < myarray[i].length-1;) {     
+                                                
+                        if (myarray[i][j-1] == temp - 1){
+                            temp = myarray[i][j-1];                             
+                            myarray[i][j] = 88; // Пока взяла 88 для визуализации пути
+                            y = j-1;
+                        }                     
+                        if (myarray[i][j+1] == temp-1){
+                            temp = myarray[i][j+1];                            
+                            myarray[i][j] = 88;
+                            y = j+1;  
+
+                        }
+                        if (myarray[i-1][j] == temp - 1 ){
+                            temp = myarray[i-1][j];
+                            myarray[i][j] = 88;
+                            x = i-1; 
+                        } 
+                        if (myarray[i+1][j] == temp - 1){
+                            temp = myarray[i+1][j];                             
+                            myarray[i][j] = 88;
+                            x = i+1;  
+                        
+                        }                           
+                        
+                    }
+                    
+                }
+            }
+            // for (int i = 1; i < myarray.length-1; i++) {         
+            //     for (int j = 1; j < myarray[i].length-1; j++) 
+            //     if (myarray[i][j] == (0)){
+            //         findPath(myarray, x, y); 
+            //     }                              
+                 
+            // }    
+            return myarray;
+        }
+    
+
+    }
+
+}
+        
+   

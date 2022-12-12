@@ -45,12 +45,11 @@ public class HW4 {
     class MyExecute {
         public static void ex1() {
             System.out.println("Реализация волнового алгоритма \n");
-            System.out.println("Условные обозначеия: 99 - препятствие, -1 - свободные ячейки, 0 - точка начала маршрута \n");
+            System.out.println("Условные обозначения: 99 - препятствие, -1 - свободные ячейки, 0 - точка начала маршрута \n");
             Scanner in = new Scanner(System.in);            
             System.out.print("Введите величину карты: ");
             int dim = in.nextInt();
-            System.out.print("\n");
-            // in.close();
+            System.out.print("\n");            
 
             int[][] intarray = new int[dim][dim];
            
@@ -68,15 +67,32 @@ public class HW4 {
             int outY = in.nextInt();       
             
            
-            intarray = MyLibrary.startPoint(intarray, inX, inY); // Копия массива с точкой начала маршрута - 0
-            MyLibrary.printArr(intarray, dim);
-            in.close();
+            // Проверка точки начала маршрута
+            while (intarray[inX][inY] != -1) {   
+               
+                    System.out.println("\n!Введите коректные координаты точки начала маршрута!\n");                
+                    System.out.print("Введите координаты точки начала маршрута по оси х: ");
+                    inX = in.nextInt();
+                    System.out.print("Введите координаты точки начала маршрута по оси y: ");
+                    inY = in.nextInt();                
+                } 
+            
+            intarray[inX][inY] = 0;                 
 
             MyLibrary.wavesCreate(intarray, 0); 
-
-            System.out.println("Визуализация распространения волн по массиву. 100 - путь в эту точку не найден \n");
-            MyLibrary.printArr(intarray, dim);
+            // System.out.println("Визуализация распространения волн по массиву. 100 и больше - путь в эту точку не найден \n");
+            // MyLibrary.printArr(intarray, dim); // Если хотим посмотреть распространение волн
             
+             // Проверка конечной точки маршрута
+            while ( intarray[outX][outY] <= 0 || intarray[outX][outY] >= 99 ){
+             
+                System.out.println("\n!Введите коректные координаты конечной точки маршрута!\n");                
+                System.out.print("Введите координаты конечной точки маршрута по оси х: ");
+                outX = in.nextInt();
+                System.out.print("Введите координаты конечной точки маршрута по оси y: ");
+                outY = in.nextInt();                
+            }   
+            in.close();    
             //Поиск маршрута 
             MyLibrary.findPath(intarray, outX, outY, inX, inY); 
             MyLibrary.printArr(intarray, dim);
@@ -141,41 +157,18 @@ public class HW4 {
                
             }
 
-        public static int[][]startPoint (int [][] myarray, int x, int y) {
-            
-                                
-            if ( myarray[x][y] == -1){
-                myarray[x][y] = 0;
-            }
-            else{
-                System.out.println("\n!Введите коректные координаты точки начала маршрута!\n");
-                Scanner in = new Scanner(System.in);
-                System.out.print("Введите координаты точки начала маршрута по оси х: ");
-                int newX = in.nextInt();
-                System.out.print("Введите координаты точки начала маршрута по оси y: ");
-                int newY = in.nextInt();
-
-                startPoint(myarray, newX, newY);
-                in.close();
-            } 
-             
-            
-            return myarray;                
-
-        }
 
         public static int [][] wavesCreate (int [][] array, int count) { 
 
                 
-            for (int i = 1; i < array.length-1; i++) { 
+            for (int i = 1; i < array.length-1; i++) {
         
                 for (int j = 1; j < array[i].length-1; j++) {      
                     
                     
                     if ((array[i][j] == -1) && (array[i][j-1] == count || array[i][j+1] == count || array[i-1][j] == count || array[i+1][j] == count)){
-                        array[i][j] = count+1;                               
-
-                    }                           
+                        array[i][j] = count+1;                              
+                    }                          
                     
                 }
                 
@@ -192,109 +185,77 @@ public class HW4 {
         }  
     
 
-        public static int [][] findPath (int [][] myarray, int x, int y, int inx, int iny) { 
-            // Проверка конечной точки маршрута
-            if ( myarray[x][y] <= 0 && myarray[x][y] >= 99 ){
-             
-                System.out.println("\n!Введите коректные координаты конечной точки маршрута!\n");
-                Scanner in = new Scanner(System.in);
-                System.out.print("Введите координаты конечной точки маршрута по оси х: ");
-                int newX = in.nextInt();
-                System.out.print("Введите координаты конечной точки маршрута по оси y: ");
-                int newY = in.nextInt();
-
-                findPath(myarray, newX, newY, inx, iny);
-                in.close();
-            }              
+        public static int [][] findPath (int [][] myarray, int x, int y, int inx, int iny) {           
            
-            // ArrayList<String> mylist = new ArrayList<>();
-           
-
             System.out.println("Визуализация маршрута от начальной до конечной точки (путь показан нулями): \n");
 
             if (x > inx || x == inx && x > inx){
                 while (myarray[x][y] != 0){
                     int temp = myarray[x][y];
 
-                    for (int i = x; i < myarray.length-1; i++) { 
-                
-                        for (int j = y; j < myarray[i].length-1; j++) {     
+                    for (int i = x; i < myarray.length-1; i++) {                 
+                        for (int j = y; j < myarray[i].length-1; j++) {    
                                                     
                             if (myarray[i][j-1] == temp - 1){
                                 temp = myarray[i][j-1];                             
-                                myarray[i][j] = 888; // Пока взяла 888 для визуализации пути
-                                // mylist.add("x : " + i + " y : " + j);
+                                myarray[i][j] = 888; // Пока взяла 888 для визуализации пути                                
                                 y = j-1;
                                 break;
                             }                     
                             if (myarray[i][j+1] == temp-1){
                                 temp = myarray[i][j+1];                            
-                                myarray[i][j] = 888;
-                                // mylist.add("x : " + i + " y : " + j);
+                                myarray[i][j] = 888;                                
                                 y = j+1;  
                                 break;
                             }
                             if (myarray[i-1][j] == temp - 1 ){
                                 temp = myarray[i-1][j];
-                                myarray[i][j] = 888;
-                                // mylist.add("x : " + i + " y : " + j);
+                                myarray[i][j] = 888;                        
                                 x = i-1; 
                                 break;
                             } 
                             if (myarray[i+1][j] == temp - 1){
                                 temp = myarray[i+1][j];                             
                                 myarray[i][j] = 888;
-                                // mylist.add("x : " + i + " y : " + j);
                                 x = i+1;  
-                                break;
-                            
-                            }                           
-                            
-                        }
-                        
+                                break;                            
+                            }                         
+                        }                        
                     }
                 }
             }
             else{
                 while (myarray[x][y] != 0){
                     int temp = myarray[x][y];
-
-                    for (int i = x; i > 0; i--) { 
-                
+                    for (int i = x; i > 0; i--) {                 
                         for (int j = y; j > 0; j--) {     
                                                     
                             if (myarray[i][j-1] == temp - 1){
                                 temp = myarray[i][j-1];                             
-                                myarray[i][j] = 888; // Пока взяла 888 для визуализации пути
-                                // mylist.add("x : " + i + " y : " + j);
+                                myarray[i][j] = 888; 
                                 y = j-1;
                                 break;
                             }                     
                             if (myarray[i][j+1] == temp-1){
                                 temp = myarray[i][j+1];                            
                                 myarray[i][j] = 888;
-                                // mylist.add("x : " + i + " y : " + j);
                                 y = j+1;  
                                 break;
                             }
                             if (myarray[i-1][j] == temp - 1 ){
                                 temp = myarray[i-1][j];
                                 myarray[i][j] = 888;
-                                // mylist.add("x : " + i + " y : " + j);
                                 x = i-1; 
                                 break;
                             } 
                             if (myarray[i+1][j] == temp - 1){
                                 temp = myarray[i+1][j];                             
                                 myarray[i][j] = 888;
-                                // mylist.add("x : " + i + " y : " + j);
                                 x = i+1;  
                                 break;
                             
-                            }                           
-                            
-                        }
-                        
+                            }                         
+                        }                        
                     }
                 }
             }
@@ -307,16 +268,16 @@ public class HW4 {
                     if (myarray[i][j] > 0 && myarray[i][j] < 99){
                         myarray[i][j] = (-1);
                     }
+                    if (myarray[i][j] >= 100 && myarray[i][j] !=888 ){
+                        myarray[i][j] = (-1);
+                    }
                 }
             }
 
             // System.out.println(mylist);   
             return myarray;
-        }
-    
-
+        }   
     }
-
 }
         
    

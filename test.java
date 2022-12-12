@@ -69,16 +69,33 @@ public class test {
             int outY = in.nextInt();       
             
            
-            intarray = MyLibrary.startPoint(intarray, inX, inY); // Копия массива с точкой начала маршрута - 0
-            MyLibrary.printArr(intarray, dim);
-            in.close();
+            // Проверка точки начала маршрута
+            while (intarray[inX][inY] != -1) {   
+               
+                    System.out.println("\n!Введите коректные координаты точки начала маршрута!\n");                
+                    System.out.print("Введите координаты точки начала маршрута по оси х: ");
+                    inX = in.nextInt();
+                    System.out.print("Введите координаты точки начала маршрута по оси y: ");
+                    inY = in.nextInt();                
+                } 
+            
+            intarray[inX][inY] = 0;                 
 
             MyLibrary.wavesCreate(intarray, 0); 
-
-            System.out.println("Визуализация распространения волн по массиву. 100 - путь в эту точку не найден \n");
-            MyLibrary.printArr(intarray, dim);
+            // System.out.println("Визуализация распространения волн по массиву. 100 и больше - путь в эту точку не найден \n");
+            // MyLibrary.printArr(intarray, dim); // Если хотим посмотреть распространение волн
             
-            //Поиск маршрута (строим маршрут от конечной точки до начальной) Пока закомментировано до устранения ошибок
+             // Проверка конечной точки маршрута
+            while ( intarray[outX][outY] <= 0 || intarray[outX][outY] >= 99 ){
+             
+                System.out.println("\n!Введите коректные координаты конечной точки маршрута!\n");                
+                System.out.print("Введите координаты конечной точки маршрута по оси х: ");
+                outX = in.nextInt();
+                System.out.print("Введите координаты конечной точки маршрута по оси y: ");
+                outY = in.nextInt();                
+            }   
+            in.close();    
+            //Поиск маршрута 
             MyLibrary.findPath(intarray, outX, outY, inX, inY); 
             MyLibrary.printArr(intarray, dim);
 
@@ -142,28 +159,6 @@ public class test {
                
             }
 
-        public static int[][]startPoint (int [][] myarray, int x, int y) {
-            
-                                
-            if ( myarray[x][y] == -1){
-                myarray[x][y] = 0;
-            }
-            else{
-                System.out.println("\n!Введите коректные координаты точки начала маршрута!\n");
-                Scanner in = new Scanner(System.in);
-                System.out.print("Введите координаты точки начала маршрута по оси х: ");
-                int newX = in.nextInt();
-                System.out.print("Введите координаты точки начала маршрута по оси y: ");
-                int newY = in.nextInt();
-
-                startPoint(myarray, newX, newY);
-                in.close();
-            } 
-             
-            
-            return myarray;                
-
-        }
 
         public static int [][] wavesCreate (int [][] array, int count) { 
 
@@ -174,9 +169,8 @@ public class test {
                     
                     
                     if ((array[i][j] == -1) && (array[i][j-1] == count || array[i][j+1] == count || array[i-1][j] == count || array[i+1][j] == count)){
-                        array[i][j] = count+1;                               
-
-                    }                           
+                        array[i][j] = count+1;                              
+                    }                          
                     
                 }
                 
@@ -193,25 +187,10 @@ public class test {
         }  
     
 
-        public static int [][] findPath (int [][] myarray, int x, int y, int inx, int iny) { 
-            // Проверка конечной точки маршрута
-            if ( myarray[x][y] <= 0 && myarray[x][y] >= 99 ){
-             
-                System.out.println("\n!Введите коректные координаты конечной точки маршрута!\n");
-                Scanner in = new Scanner(System.in);
-                System.out.print("Введите координаты конечной точки маршрута по оси х: ");
-                int newX = in.nextInt();
-                System.out.print("Введите координаты конечной точки маршрута по оси y: ");
-                int newY = in.nextInt();
-
-                findPath(myarray, newX, newY, inx, iny);
-                in.close();
-            }              
+        public static int [][] findPath (int [][] myarray, int x, int y, int inx, int iny) {           
            
-            // ArrayList<String> mylist = new ArrayList<>();
-           
+            System.out.println("Визуализация маршрута от начальной до конечной точки (путь показан нулями): \n");
 
-            System.out.println("Визуализация кратчайшего маршрута от начальной до конечной точки");
             if (x > inx || x == inx && x > inx){
                 while (myarray[x][y] != 0){
                     int temp = myarray[x][y];
@@ -306,6 +285,9 @@ public class test {
                     }
                     if (myarray[i][j] > 0 && myarray[i][j] < 99){
                         myarray[i][j] = (-1);
+                    }
+                    if (myarray[i][j] > 100 && myarray[i][j] !=888 ){
+                        myarray[i][j] = (100);
                     }
                 }
             }

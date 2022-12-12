@@ -78,9 +78,9 @@ public class HW4 {
             System.out.println("Визуализация распространения волн по массиву. 100 - путь в эту точку не найден \n");
             MyLibrary.printArr(intarray, dim);
             
-            // Поиск маршрута (строим маршрут от конечной точки до начальной) Пока закомментировано до устранения ошибок
-            // MyLibrary.findPath(intarray, outX, outY); 
-            // MyLibrary.printArr(intarray, dim);
+            //Поиск маршрута (строим маршрут от конечной точки до начальной) Пока закомментировано до устранения ошибок
+            MyLibrary.findPath(intarray, outX, outY); 
+            MyLibrary.printArr(intarray, dim);
 
         }    
     }
@@ -208,34 +208,45 @@ public class HW4 {
                 in.close();
             }              
            
-            // Поиск маршрута от конечной точки
+            // ArrayList<String> mylist = new ArrayList<>();
+           
+
+            System.out.println("Визуализация кратчайшего маршрута от начальной до конечной точки");
+
             while (myarray[x][y] != 0){
                 int temp = myarray[x][y];
 
-                for (int i = x; i < myarray.length-1;) { 
+                for (int i = x; i < myarray.length-1; i++) { 
             
-                    for (int j = y; j < myarray[i].length-1;) {     
+                    for (int j = y; j < myarray[i].length-1; j++) {     
                                                 
                         if (myarray[i][j-1] == temp - 1){
                             temp = myarray[i][j-1];                             
-                            myarray[i][j] = 88; // Пока взяла 88 для визуализации пути
+                            myarray[i][j] = 888; // Пока взяла 88 для визуализации пути
+                            // mylist.add("x : " + i + " y : " + j);
                             y = j-1;
+                            break;
                         }                     
                         if (myarray[i][j+1] == temp-1){
                             temp = myarray[i][j+1];                            
-                            myarray[i][j] = 88;
+                            myarray[i][j] = 888;
+                            // mylist.add("x : " + i + " y : " + j);
                             y = j+1;  
-
+                            break;
                         }
                         if (myarray[i-1][j] == temp - 1 ){
                             temp = myarray[i-1][j];
-                            myarray[i][j] = 88;
+                            myarray[i][j] = 888;
+                            // mylist.add("x : " + i + " y : " + j);
                             x = i-1; 
+                            break;
                         } 
                         if (myarray[i+1][j] == temp - 1){
                             temp = myarray[i+1][j];                             
-                            myarray[i][j] = 88;
+                            myarray[i][j] = 888;
+                            // mylist.add("x : " + i + " y : " + j);
                             x = i+1;  
+                            break;
                         
                         }                           
                         
@@ -243,13 +254,21 @@ public class HW4 {
                     
                 }
             }
-            // for (int i = 1; i < myarray.length-1; i++) {         
-            //     for (int j = 1; j < myarray[i].length-1; j++) 
-            //     if (myarray[i][j] == (0)){
-            //         findPath(myarray, x, y); 
-            //     }                              
-                 
-            // }    
+          
+
+            for (int i = 1; i < myarray.length-1; i++) {         
+                for (int j = 1; j < myarray[i].length-1; j++) 
+                {
+                    if (myarray[i][j] == 888){
+                        myarray[i][j] = 0;
+                    }
+                    if (myarray[i][j] > 0 && myarray[i][j] < 99){
+                        myarray[i][j] = (-1);
+                    }
+                }
+            }
+
+            // System.out.println(mylist);   
             return myarray;
         }
     

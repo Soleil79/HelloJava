@@ -198,7 +198,7 @@ public class HW4 {
                                                     
                             if (myarray[i][j-1] == temp - 1){
                                 temp = myarray[i][j-1];                             
-                                myarray[i][j] = 888; // Пока взяла 888 для визуализации пути                                
+                                myarray[i][j] = 888;                                 
                                 y = j-1;
                                 break;
                             }                     
@@ -273,8 +273,7 @@ public class HW4 {
                     }
                 }
             }
-
-            // System.out.println(mylist);   
+  
             return myarray;
         }   
     }

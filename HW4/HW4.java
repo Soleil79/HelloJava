@@ -34,7 +34,6 @@
 
 package HW4;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -78,8 +77,8 @@ public class HW4 {
             System.out.println("Визуализация распространения волн по массиву. 100 - путь в эту точку не найден \n");
             MyLibrary.printArr(intarray, dim);
             
-            //Поиск маршрута (строим маршрут от конечной точки до начальной) Пока закомментировано до устранения ошибок
-            MyLibrary.findPath(intarray, outX, outY); 
+            //Поиск маршрута 
+            MyLibrary.findPath(intarray, outX, outY, inX, inY); 
             MyLibrary.printArr(intarray, dim);
 
         }    
@@ -193,7 +192,7 @@ public class HW4 {
         }  
     
 
-        public static int [][] findPath (int [][] myarray, int x, int y) { 
+        public static int [][] findPath (int [][] myarray, int x, int y, int inx, int iny) { 
             // Проверка конечной точки маршрута
             if ( myarray[x][y] <= 0 && myarray[x][y] >= 99 ){
              
@@ -204,58 +203,101 @@ public class HW4 {
                 System.out.print("Введите координаты конечной точки маршрута по оси y: ");
                 int newY = in.nextInt();
 
-                findPath(myarray, newX, newY);
+                findPath(myarray, newX, newY, inx, iny);
                 in.close();
             }              
            
             // ArrayList<String> mylist = new ArrayList<>();
            
 
-            System.out.println("Визуализация кратчайшего маршрута от начальной до конечной точки");
+            System.out.println("Визуализация маршрута от начальной до конечной точки (путь показан нулями): \n");
 
-            while (myarray[x][y] != 0){
-                int temp = myarray[x][y];
+            if (x > inx || x == inx && x > inx){
+                while (myarray[x][y] != 0){
+                    int temp = myarray[x][y];
 
-                for (int i = x; i < myarray.length-1; i++) { 
-            
-                    for (int j = y; j < myarray[i].length-1; j++) {     
-                                                
-                        if (myarray[i][j-1] == temp - 1){
-                            temp = myarray[i][j-1];                             
-                            myarray[i][j] = 888; // Пока взяла 88 для визуализации пути
-                            // mylist.add("x : " + i + " y : " + j);
-                            y = j-1;
-                            break;
-                        }                     
-                        if (myarray[i][j+1] == temp-1){
-                            temp = myarray[i][j+1];                            
-                            myarray[i][j] = 888;
-                            // mylist.add("x : " + i + " y : " + j);
-                            y = j+1;  
-                            break;
+                    for (int i = x; i < myarray.length-1; i++) { 
+                
+                        for (int j = y; j < myarray[i].length-1; j++) {     
+                                                    
+                            if (myarray[i][j-1] == temp - 1){
+                                temp = myarray[i][j-1];                             
+                                myarray[i][j] = 888; // Пока взяла 888 для визуализации пути
+                                // mylist.add("x : " + i + " y : " + j);
+                                y = j-1;
+                                break;
+                            }                     
+                            if (myarray[i][j+1] == temp-1){
+                                temp = myarray[i][j+1];                            
+                                myarray[i][j] = 888;
+                                // mylist.add("x : " + i + " y : " + j);
+                                y = j+1;  
+                                break;
+                            }
+                            if (myarray[i-1][j] == temp - 1 ){
+                                temp = myarray[i-1][j];
+                                myarray[i][j] = 888;
+                                // mylist.add("x : " + i + " y : " + j);
+                                x = i-1; 
+                                break;
+                            } 
+                            if (myarray[i+1][j] == temp - 1){
+                                temp = myarray[i+1][j];                             
+                                myarray[i][j] = 888;
+                                // mylist.add("x : " + i + " y : " + j);
+                                x = i+1;  
+                                break;
+                            
+                            }                           
+                            
                         }
-                        if (myarray[i-1][j] == temp - 1 ){
-                            temp = myarray[i-1][j];
-                            myarray[i][j] = 888;
-                            // mylist.add("x : " + i + " y : " + j);
-                            x = i-1; 
-                            break;
-                        } 
-                        if (myarray[i+1][j] == temp - 1){
-                            temp = myarray[i+1][j];                             
-                            myarray[i][j] = 888;
-                            // mylist.add("x : " + i + " y : " + j);
-                            x = i+1;  
-                            break;
-                        
-                        }                           
                         
                     }
-                    
                 }
             }
-          
+            else{
+                while (myarray[x][y] != 0){
+                    int temp = myarray[x][y];
 
+                    for (int i = x; i > 0; i--) { 
+                
+                        for (int j = y; j > 0; j--) {     
+                                                    
+                            if (myarray[i][j-1] == temp - 1){
+                                temp = myarray[i][j-1];                             
+                                myarray[i][j] = 888; // Пока взяла 888 для визуализации пути
+                                // mylist.add("x : " + i + " y : " + j);
+                                y = j-1;
+                                break;
+                            }                     
+                            if (myarray[i][j+1] == temp-1){
+                                temp = myarray[i][j+1];                            
+                                myarray[i][j] = 888;
+                                // mylist.add("x : " + i + " y : " + j);
+                                y = j+1;  
+                                break;
+                            }
+                            if (myarray[i-1][j] == temp - 1 ){
+                                temp = myarray[i-1][j];
+                                myarray[i][j] = 888;
+                                // mylist.add("x : " + i + " y : " + j);
+                                x = i-1; 
+                                break;
+                            } 
+                            if (myarray[i+1][j] == temp - 1){
+                                temp = myarray[i+1][j];                             
+                                myarray[i][j] = 888;
+                                // mylist.add("x : " + i + " y : " + j);
+                                x = i+1;  
+                                break;
+                            
+                            }                           
+                            
+                        }
+                        
+                    }
+                }
+            }
             for (int i = 1; i < myarray.length-1; i++) {         
                 for (int j = 1; j < myarray[i].length-1; j++) 
                 {

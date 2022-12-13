@@ -1,304 +1,109 @@
-// Инициализация
 
-// Пометить стартовую ячейку 
-// d := 0 
-// Распространение волны
-
-// ЦИКЛ
-//   ДЛЯ каждой ячейки loc, помеченной числом d
-//     пометить все соседние свободные непомеченные ячейки числом d + 1
-//   КЦ
-//   d := d + 1
-// ПОКА (финишная ячейка не помечена) И (есть возможность распространения волны) 
-// Восстановление пути
-
-// ЕСЛИ финишная ячейка помечена
-// ТО
-//   перейти в финишную ячейку
-//   ЦИКЛ
-//     выбрать среди соседних ячейку, помеченную числом на 1 меньше числа в текущей ячейке
-//     перейти в выбранную ячейку и добавить её к пути
-//   ПОКА текущая ячейка — не стартовая
-//   ВОЗВРАТ путь найден
-// ИНАЧЕ
-//   ВОЗВРАТ путь не найден
-
-// Реализовать волновой алгоритм и подготовиться к его решению.
-// 1. Описать логику получения карты
-// 2. Описать логику заполнения карты
-// 3. Описать как установить точку начала получения маршрута
-// 4. Будет ли отличаться решение, если на карте будет несколько выходов
-// Теория
-// +ГИТ. readme.md
-
-
-
-
-
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.ArrayList;
 
 public class test {
-    public static void main(String[] args) {
-        MyExecute.ex1();     
-    }
+  public static void main(String[] args) {
+    Infrastructure infrastructure = new Infrastructure();
 
-    class MyExecute {
-        public static void ex1() {
-            System.out.println("Реализация волнового алгоритма \n");
-            System.out.println("Условные обозначеия: 99 - препятствие, -1 - свободные ячейки, 0 - точка начала маршрута \n");
-            Scanner in = new Scanner(System.in);            
-            System.out.print("Введите величину карты: ");
-            int dim = in.nextInt();
-            System.out.print("\n");
-            // in.close();
-
-            int[][] intarray = new int[dim][dim];
-           
-            MyLibrary.arrCreate(intarray, dim);
-            MyLibrary.printArr(intarray, dim);
-
-            
-            System.out.print("Введите координаты точки начала маршрута по оси х: ");
-            int inX = in.nextInt();
-            System.out.print("Введите координаты точки начала маршрута по оси y: ");
-            int inY = in.nextInt();
-            System.out.print("Введите координаты точки конца маршрута по оси х: ");
-            int outX = in.nextInt();
-            System.out.print("Введите координаты точки конца маршрута по оси y: ");
-            int outY = in.nextInt();       
-            
-           
-            // Проверка точки начала маршрута
-            while (intarray[inX][inY] != -1) {   
-               
-                    System.out.println("\n!Введите коректные координаты точки начала маршрута!\n");                
-                    System.out.print("Введите координаты точки начала маршрута по оси х: ");
-                    inX = in.nextInt();
-                    System.out.print("Введите координаты точки начала маршрута по оси y: ");
-                    inY = in.nextInt();                
-                } 
-            
-            intarray[inX][inY] = 0;                 
-
-            MyLibrary.wavesCreate(intarray, 0); 
-            // System.out.println("Визуализация распространения волн по массиву. 100 и больше - путь в эту точку не найден \n");
-            // MyLibrary.printArr(intarray, dim); // Если хотим посмотреть распространение волн
-            
-             // Проверка конечной точки маршрута
-            while ( intarray[outX][outY] <= 0 || intarray[outX][outY] >= 99 ){
-             
-                System.out.println("\n!Введите коректные координаты конечной точки маршрута!\n");                
-                System.out.print("Введите координаты конечной точки маршрута по оси х: ");
-                outX = in.nextInt();
-                System.out.print("Введите координаты конечной точки маршрута по оси y: ");
-                outY = in.nextInt();                
-            }   
-            in.close();    
-            //Поиск маршрута 
-            MyLibrary.findPath(intarray, outX, outY, inX, inY); 
-            MyLibrary.printArr(intarray, dim);
-
-        }    
-    }
-
-    
-    class MyLibrary {
-
-          /** 
-        * @param steps - метод создания массива      
-        */
-        public static int [][] arrCreate (int [][] array, int size) {
-        
-
-            for (int [] row : array){
-                Arrays.fill(row, -1); 
-            }
-
-            // Заполняем карту препятствиями:
-           for (int i = 0; i < array.length; i++) {
-                for (int j = 0; j < array[i].length; j++) {
-                int obstacle = (int) ((Math.random() * ((size)-1)) + 1);                
-                if (j == obstacle || i+1 == obstacle){
-                    array[i][j] = 99;
-                }
-                if ((i == 0 || j == 0) || (i == size-1 || j == size-1)){
-                    array[i][j] = 99;
-                }                             
-              
-            }          
-        }
-        return array;
-    }               
-
-        
-        public static void printArr  (int [][] array, int size) {
-            
-                String [] xString = new String[size];
-                xString[0] = " ";
-                System.out.printf("%s\t", xString[0]);
-                xString[1] = "0";
-                System.out.printf("%s\t", xString[1]);
-                for (int el = 1; el < size; el++) {
-                    xString[el] = Integer.toString(el);
-                    System.out.printf("%s\t", xString[el]);
-                }
-                
-                System.out.print("\n\n");
-                int count = 0;
-                for (int i = 0; i < array.length; i++) {
-                    System.out.print(count + "\t");
-                                    
-                    for (int j = 0; j < array[i].length; j++) {                        
-                        System.out.print(array[i][j] + "\t");
-                    }
-                    
-                    count++;
-                    System.out.println("\n\n");
-                }
-               
-            }
-
-
-        public static int [][] wavesCreate (int [][] array, int count) { 
-
-                
-            for (int i = 1; i < array.length-1; i++) { 
-        
-                for (int j = 1; j < array[i].length-1; j++) {      
-                    
-                    
-                    if ((array[i][j] == -1) && (array[i][j-1] == count || array[i][j+1] == count || array[i-1][j] == count || array[i+1][j] == count)){
-                        array[i][j] = count+1;                              
-                    }                          
-                    
-                }
-                
-            }
-
-            for (int i = 1; i < array.length-1; i++) {         
-                for (int j = 1; j < array[i].length-1; j++) 
-                if (array[i][j] == (-1)){
-                    wavesCreate(array, count+1); 
-                }                              
-                 
-            }    
-            return array;
-        }  
-    
-
-        public static int [][] findPath (int [][] myarray, int x, int y, int inx, int iny) {           
-           
-            System.out.println("Визуализация маршрута от начальной до конечной точки (путь показан нулями): \n");
-
-            if (x > inx || x == inx && x > inx){
-                while (myarray[x][y] != 0){
-                    int temp = myarray[x][y];
-
-                    for (int i = x; i < myarray.length-1; i++) { 
-                
-                        for (int j = y; j < myarray[i].length-1; j++) {     
-                                                    
-                            if (myarray[i][j-1] == temp - 1){
-                                temp = myarray[i][j-1];                             
-                                myarray[i][j] = 888; // Пока взяла 888 для визуализации пути
-                                // mylist.add("x : " + i + " y : " + j);
-                                y = j-1;
-                                break;
-                            }                     
-                            if (myarray[i][j+1] == temp-1){
-                                temp = myarray[i][j+1];                            
-                                myarray[i][j] = 888;
-                                // mylist.add("x : " + i + " y : " + j);
-                                y = j+1;  
-                                break;
-                            }
-                            if (myarray[i-1][j] == temp - 1 ){
-                                temp = myarray[i-1][j];
-                                myarray[i][j] = 888;
-                                // mylist.add("x : " + i + " y : " + j);
-                                x = i-1; 
-                                break;
-                            } 
-                            if (myarray[i+1][j] == temp - 1){
-                                temp = myarray[i+1][j];                             
-                                myarray[i][j] = 888;
-                                // mylist.add("x : " + i + " y : " + j);
-                                x = i+1;  
-                                break;
-                            
-                            }                           
-                            
-                        }
-                        
-                    }
-                }
-            }
-            else{
-                while (myarray[x][y] != 0){
-                    int temp = myarray[x][y];
-
-                    for (int i = x; i > 0; i--) { 
-                
-                        for (int j = y; j > 0; j--) {     
-                                                    
-                            if (myarray[i][j-1] == temp - 1){
-                                temp = myarray[i][j-1];                             
-                                myarray[i][j] = 888; // Пока взяла 888 для визуализации пути
-                                // mylist.add("x : " + i + " y : " + j);
-                                y = j-1;
-                                break;
-                            }                     
-                            if (myarray[i][j+1] == temp-1){
-                                temp = myarray[i][j+1];                            
-                                myarray[i][j] = 888;
-                                // mylist.add("x : " + i + " y : " + j);
-                                y = j+1;  
-                                break;
-                            }
-                            if (myarray[i-1][j] == temp - 1 ){
-                                temp = myarray[i-1][j];
-                                myarray[i][j] = 888;
-                                // mylist.add("x : " + i + " y : " + j);
-                                x = i-1; 
-                                break;
-                            } 
-                            if (myarray[i+1][j] == temp - 1){
-                                temp = myarray[i+1][j];                             
-                                myarray[i][j] = 888;
-                                // mylist.add("x : " + i + " y : " + j);
-                                x = i+1;  
-                                break;
-                            
-                            }                           
-                            
-                        }
-                        
-                    }
-                }
-            }
-            for (int i = 1; i < myarray.length-1; i++) {         
-                for (int j = 1; j < myarray[i].length-1; j++) 
-                {
-                    if (myarray[i][j] == 888){
-                        myarray[i][j] = 0;
-                    }
-                    if (myarray[i][j] > 0 && myarray[i][j] < 99){
-                        myarray[i][j] = (-1);
-                    }
-                    if (myarray[i][j] > 100 && myarray[i][j] !=888 ){
-                        myarray[i][j] = (100);
-                    }
-                }
-            }
-
-            // System.out.println(mylist);   
-            return myarray;
-        }
-    
-
-    }
-
+    System.out.println(infrastructure.getAllInfo(1));
+    System.out.println(infrastructure.getAllInfo(2));
+    System.out.println(infrastructure.getAllInfo(3));
+    System.out.println(infrastructure.getAllInfo(4));
+  }
 }
-        
-   
+
+class Infrastructure {
+  public Infrastructure() {
+    init();
+  }
+
+  Db db;
+
+  public Db getDb() {
+    return db;
+  }
+
+  public String getAllInfo(int idCinema) {
+    Cinema c = db.films.get(idCinema - 1);
+
+    return String.format("%d %s %s %s",
+        c.id,
+        c.name,
+        db.genres.get(c.genre - 1).name,
+        db.prod.get(c.filmProd - 1).titleName);
+  }
+
+  Db init() {
+    db = new Db();
+    Cinema c1 = new Cinema(1, "РўСЊРјР°", 1, 1);
+    Cinema c2 = new Cinema(2, "РЎРІРµС‚", 1, 2);
+    Cinema c3 = new Cinema(3, "РћСЃРѕР±РµРЅРЅРѕСЃС‚Рё РѕС…РѕС‚С‹...", 3, 4);
+    Cinema c4 = new Cinema(4, "Р§РµР»РѕРІРµРє РїР°СѓРє", 3, 3);
+
+    db.films.add(c1);
+    db.films.add(c2);
+    db.films.add(c3);
+    db.films.add(c4);
+
+    db.genres.add(new Genre(1, "РЈР¶Р°СЃС‹"));
+    db.genres.add(new Genre(2, "Р”СЂР°РјР°"));
+    db.genres.add(new Genre(3, "РљРѕРјРµРґРёСЏ"));
+    FilmProducerFactory pf = new FilmProducerFactory();
+    db.addFilmProducer(pf.getFilmProducer("Р›РµРЅС„РёР»СЊРј"));
+    db.addFilmProducer(pf.getFilmProducer("РњР°СЂРІРµР»"));
+    db.addFilmProducer(pf.getFilmProducer("РњРѕСЃС„РёР»СЊРј"));
+    db.addFilmProducer(pf.getFilmProducer("DC"));
+
+    return db;
+  }
+}
+
+class Db {
+  ArrayList<Cinema> films = new ArrayList<>();
+  ArrayList<FilmProducer> prod = new ArrayList<>();
+  ArrayList<Genre> genres = new ArrayList<>();
+
+  public void addFilmProducer(FilmProducer producer) {
+    prod.add(producer);
+  }
+}
+
+class Cinema {
+  int id;
+  int filmProd;
+  String name;
+  int genre;
+
+  public Cinema(int id, String name, int genre, int filmProd) {
+    this.id = id;
+    this.filmProd = filmProd;
+    this.name = name;
+    this.genre = genre;
+  }
+}
+
+class FilmProducer {
+  int id;
+  String titleName;
+}
+
+class Genre {
+  int id;
+  String name;
+
+  public Genre(int id, String name) {
+    this.id = id;
+    this.name = name;
+  }
+}
+
+class FilmProducerFactory {
+  int count = 1;
+
+  public FilmProducer getFilmProducer(String name) {
+    FilmProducer fp = new FilmProducer();
+    fp.id = count++;
+    fp.titleName = name;
+    return fp;
+  }
+}

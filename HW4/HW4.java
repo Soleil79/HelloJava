@@ -103,9 +103,6 @@ public class HW4 {
     
     class MyLibrary {
 
-          /** 
-        * @param steps - метод создания массива      
-        */
         public static int [][] arrCreate (int [][] array, int size) {
         
 

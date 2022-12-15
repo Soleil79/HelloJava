@@ -1,5 +1,6 @@
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class App {
   public static void main(String[] args) {
@@ -9,10 +10,32 @@ public class App {
     System.out.println(infrastructure.getAllInfo(2));
     System.out.println(infrastructure.getAllInfo(3));
     System.out.println(infrastructure.getAllInfo(4));
+    Scanner in = new Scanner(System.in, "Cp866"); 
+    System.out.println("\nДля поиска по базе фильмов введите название фильма или часть названия: ");
+    String findName = in.nextLine();
+    in.close();
+    infrastructure.findAll(findName);      
+    
   }
 }
 
 class Infrastructure {
+
+  public void findAll (String word){
+    ArrayList<Cinema> movies = new ArrayList<>();
+    int count = 0;    
+    for (Cinema movie : db.films){    
+        if (movie.name.toLowerCase().indexOf(word.toLowerCase()) != -1){
+        movies.add(movie);
+        System.out.println(getAllInfo(movie.id));
+        count++;
+      }
+    }
+    if (count < 1){
+      System.out.println("Совпадения не найдены");
+      }   
+  }
+
   public Infrastructure() {
     init();
   }

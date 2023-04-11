@@ -1,3 +1,4 @@
+package Algorithms;
 import java.util.Arrays;
 
 // Реализовать алгоритм сортировки массива слиянием

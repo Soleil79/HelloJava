@@ -11,12 +11,6 @@ public class List {
         return head == null;
     }
 
-    // public void add(int value){
-    //     Node temp = new Node(value);
-    //     temp.next = head;
-    //     head = temp;
-    // }
-
     public void add(int value){
     Node newNode = new Node(value);
     Node currentNode = head;
